@@ -3,8 +3,9 @@ package service;
 import java.util.ArrayList;
 import java.util.List;
 import model.Customer;
-import util.BinaryFileHandler;
-import util.Validation;
+import utilities.Acceptable;
+import utilities.BinaryFileHandler;
+import utilities.Validation;
 
 /**
  * @author ThanhDuy
@@ -13,17 +14,35 @@ public class CustomerServices extends ArrayList<Customer> implements Workable<Cu
 
     @Override
     public void addNew(Customer x) {
-        // 1. Validation dữ liệu đầu vào
+        // 1. Validation cơ bản (Null/Empty)
         Validation.checkNullObject(x, "Customer object cannot be null.");
         Validation.checkNullOrEmpty(x.getCode(), "Customer ID cannot be empty.");
 
-        // 2. Check trùng ID (Nghiệp vụ)
-        // Nếu tìm thấy ID này rồi (kết quả != null) -> Báo lỗi ngay
-        Validation.checkDuplicate(
-                this.searchByCode(x.getCode()),
+        // 2. Validation Định dạng (Regex) bằng Acceptable
+        if (!Acceptable.isValid(x.getCode(), Acceptable.CUS_ID_VALID)) {
+            throw new IllegalArgumentException("Customer ID is invalid. Must start with C, G, K followed by 4 digits.");
+        }
+
+        // Check Name (2-25 ký tự)
+        if (!Acceptable.isValid(x.getName(), Acceptable.NAME_VALID)) {
+            throw new IllegalArgumentException("Customer Name is invalid. Length must be between 2 and 25.");
+        }
+
+        // Check Phone (10 số, bắt đầu bằng 0)
+        if (!Acceptable.isValid(x.getPhoneNumber(), Acceptable.PHONE_VALID)) {
+            throw new IllegalArgumentException("Phone number must be 10 digits and start with 0.");
+        }
+
+        // Check Email
+        if (!Acceptable.isValid(x.getEmail(), Acceptable.EMAIL_VALID)) {
+            throw new IllegalArgumentException("Email format is invalid.");
+        }
+
+        // 3. Check trùng ID (Nghiệp vụ)
+        Validation.checkDuplicate(this.searchByCode(x.getCode()),
                 "Customer ID " + x.getCode() + " already exists.");
 
-        // 3. Thêm vào list
+        // 4. Thêm vào list
         this.add(x);
     }
 
@@ -36,12 +55,13 @@ public class CustomerServices extends ArrayList<Customer> implements Workable<Cu
         // 2. Tìm khách hàng cũ
         Customer oldCus = this.searchByCode(newInfo.getCode());
 
+        
+
         // 3. Check tồn tại (Nghiệp vụ)
         // Nếu không tìm thấy (kết quả == null) -> Báo lỗi ngay
         Validation.checkExists(
                 oldCus,
-                "Customer ID " + newInfo.getCode() + " not found to update."
-        );
+                "Customer ID " + newInfo.getCode() + " not found to update.");
 
         // 4. Cập nhật dữ liệu
         oldCus.updateDetails(newInfo.getName(), newInfo.getPhoneNumber(), newInfo.getEmail());

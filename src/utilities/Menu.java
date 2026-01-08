@@ -1,7 +1,7 @@
-package util;
+package utilities;
 
 import java.util.ArrayList;
-import util.Inputter;
+import utilities.Inputter;
 
 public class Menu<E> {
 

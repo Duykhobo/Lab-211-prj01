@@ -1,8 +1,8 @@
 package view;
 
 import model.Customer;
-import util.Acceptable;
-import util.Inputter;
+import utilities.Acceptable;
+import utilities.Inputter;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -13,8 +13,7 @@ public class CustomerView {
             String c = Inputter.getAString(
                     "Enter Customer Code (C/G/K + 4 digits): ",
                     "Invalid format! (Example: C0001, G1234)",
-                    Acceptable.CUS_ID_VALID
-            );
+                    Acceptable.CUS_ID_VALID);
             if (isDuplicate.test(c)) {
                 throw new Exception("Customer ID '" + c + "' already exists.");
             }
@@ -26,18 +25,15 @@ public class CustomerView {
         String name = Inputter.getAString(
                 "Enter Name: ",
                 "Invalid Name! (Name must be between 2-25 characters)",
-                Acceptable.NAME_VALID
-        );
+                Acceptable.NAME_VALID);
         String phone = Inputter.getAString(
                 "Enter Phone: ",
                 "Invalid Phone! (Must start with 0 and contain exactly 10 digits)",
-                Acceptable.PHONE_VALID
-        );
+                Acceptable.PHONE_VALID);
         String email = Inputter.getAString(
                 "Enter Email: ",
                 "Invalid Email! (Correct format example: user@domain.com)",
-                Acceptable.EMAIL_VALID
-        );
+                Acceptable.EMAIL_VALID);
         return new Customer(code, name, phone, email);
     }
 

@@ -1,7 +1,7 @@
 package controller;
 
 import view.MainView;
-import util.ErrorHandler;
+import utilities.ErrorHandler;
 
 /**
  * Class này CHỨA LOGIC điều hướng (Switch-case)
@@ -40,22 +40,22 @@ public class MainController {
                 customerController.register();
                 break;
             case 2:
-//                customerController.update();
+                // customerController.update();
                 break;
             case 3:
-//                customerController.search();
+                // customerController.search();
                 break;
             case 4:
-//                menuController.display();
+                // menuController.display();
                 break;
             case 5:
-//                orderController.placeOrder();
+                // orderController.placeOrder();
                 break;
             case 6:
-//                orderController.updateOrder();
+                // orderController.updateOrder();
                 break;
             case 7:
-//                orderController.save();
+                // orderController.save();
                 System.out.println(">> Data saved successfully.");
                 break;
             case 8:
@@ -83,7 +83,7 @@ public class MainController {
                         break;
                     case 2:
                         System.out.println("--- Order List ---");
-//                        orderController.display();
+                        // orderController.display();
                         break;
                     case 3:
                         System.out.println("Returning...");

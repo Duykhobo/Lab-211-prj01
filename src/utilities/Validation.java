@@ -1,4 +1,4 @@
-package util;
+package utilities;
 
 /**
  * Class tiện ích dùng để kiểm tra dữ liệu và ném Exception Giúp code Service

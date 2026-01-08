@@ -52,12 +52,20 @@ public class CustomerServices extends ArrayList<Customer> implements Workable<Cu
         Validation.checkNullObject(newInfo, "Update info cannot be null.");
         Validation.checkNullOrEmpty(newInfo.getCode(), "Customer ID to update cannot be empty.");
 
-        // 2. Tìm khách hàng cũ
+        // 2. [QUAN TRỌNG] Validate dữ liệu mới trước khi cập nhật
+        if (!Acceptable.isValid(newInfo.getName(), Acceptable.NAME_VALID)) {
+            throw new IllegalArgumentException("New Name invalid. Length must be 2-25 chars.");
+        }
+        if (!Acceptable.isValid(newInfo.getPhoneNumber(), Acceptable.PHONE_VALID)) {
+            throw new IllegalArgumentException("New Phone invalid. Must be 10 digits starting with 0.");
+        }
+        if (!Acceptable.isValid(newInfo.getEmail(), Acceptable.EMAIL_VALID)) {
+            throw new IllegalArgumentException("New Email invalid.");
+        }
+        // 3. Tìm khách hàng cũ
         Customer oldCus = this.searchByCode(newInfo.getCode());
 
-        
-
-        // 3. Check tồn tại (Nghiệp vụ)
+        // 4. Check tồn tại (Nghiệp vụ)
         // Nếu không tìm thấy (kết quả == null) -> Báo lỗi ngay
         Validation.checkExists(
                 oldCus,

@@ -42,17 +42,19 @@ public class CustomerServices extends ArrayList<Customer> implements Workable<Cu
         Validation.checkDuplicate(this.searchByCode(x.getCode()),
                 "Customer ID " + x.getCode() + " already exists.");
 
-        // 4. Thêm vào list
+        checkDuplicateProfile(x);
+
+        // 5. Thêm vào list
         this.add(x);
     }
 
     @Override
     public void update(Customer newInfo) {
-        // 1. Validation đầu vào
+        // 1. Validation đầu vào cơ bản
         Validation.checkNullObject(newInfo, "Update info cannot be null.");
         Validation.checkNullOrEmpty(newInfo.getCode(), "Customer ID to update cannot be empty.");
 
-        // 2. [QUAN TRỌNG] Validate dữ liệu mới trước khi cập nhật
+        // 2. Validate định dạng dữ liệu (Regex)
         if (!Acceptable.isValid(newInfo.getName(), Acceptable.NAME_VALID)) {
             throw new IllegalArgumentException("New Name invalid. Length must be 2-25 chars.");
         }
@@ -62,17 +64,50 @@ public class CustomerServices extends ArrayList<Customer> implements Workable<Cu
         if (!Acceptable.isValid(newInfo.getEmail(), Acceptable.EMAIL_VALID)) {
             throw new IllegalArgumentException("New Email invalid.");
         }
-        // 3. Tìm khách hàng cũ
-        Customer oldCus = this.searchByCode(newInfo.getCode());
 
-        // 4. Check tồn tại (Nghiệp vụ)
-        // Nếu không tìm thấy (kết quả == null) -> Báo lỗi ngay
-        Validation.checkExists(
-                oldCus,
+        // 3. Tìm khách hàng cũ trong list (Check tồn tại)
+        Customer oldCus = this.searchByCode(newInfo.getCode());
+        Validation.checkExists(oldCus,
                 "Customer ID " + newInfo.getCode() + " not found to update.");
 
-        // 4. Cập nhật dữ liệu
+        // 4. [QUAN TRỌNG] Check trùng lặp (Trừ chính mình ra)
+
+        // Check trùng SĐT
+        Customer phoneOwner = this.searchByPhone(newInfo.getPhoneNumber());
+        // Nếu tìm thấy người sở hữu SĐT này VÀ người đó KHÔNG PHẢI là người đang update
+        if (phoneOwner != null && !phoneOwner.getCode().equalsIgnoreCase(newInfo.getCode())) {
+            throw new IllegalArgumentException("Phone number " + newInfo.getPhoneNumber()
+                    + " is already used by another customer (" + phoneOwner.getCode() + ")");
+        }
+
+        // Check trùng Email
+        Customer emailOwner = this.searchByEmail(newInfo.getEmail());
+        if (emailOwner != null && !emailOwner.getCode().equalsIgnoreCase(newInfo.getCode())) {
+            throw new IllegalArgumentException("Email " + newInfo.getEmail()
+                    + " is already used by another customer (" + emailOwner.getCode() + ")");
+        }
+
+        // 5. Cập nhật dữ liệu
         oldCus.updateDetails(newInfo.getName(), newInfo.getPhoneNumber(), newInfo.getEmail());
+    }
+
+    // --- CÁC HÀM TÌM KIẾM BỔ TRỢ (Helper Methods) ---
+    // (Nên thêm vào để tái sử dụng cho cả addNew và update)
+
+    public Customer searchByPhone(String phone) {
+        for (Customer c : this) {
+            if (c.getPhoneNumber().equals(phone))
+                return c;
+        }
+        return null;
+    }
+
+    public Customer searchByEmail(String email) {
+        for (Customer c : this) {
+            if (c.getEmail().equalsIgnoreCase(email))
+                return c;
+        }
+        return null;
     }
 
     @Override
@@ -141,4 +176,37 @@ public class CustomerServices extends ArrayList<Customer> implements Workable<Cu
         }
     }
 
+    private void checkDuplicateProfile(Customer newCus) {
+
+        for (Customer customer : this) {
+            // Check trùng Số điện thoại
+            if (customer.getPhoneNumber().equals(newCus.getPhoneNumber())) {
+                throw new IllegalArgumentException("Phone number " + newCus.getPhoneNumber()
+                        + " is already used by customer " + customer.getCode());
+            }
+
+            // Check trùng Email (không phân biệt hoa thường)
+            if (customer.getEmail().equalsIgnoreCase(newCus.getEmail())) {
+                throw new IllegalArgumentException("Email " + newCus.getEmail()
+                        + " is already used by customer " + customer.getCode());
+            }
+
+        }
+    }
+
+    public boolean isPhoneExist(String phone) {
+        for (Customer c : this) {
+            if (c.getPhoneNumber().equals(phone))
+                return true;
+        }
+        return false;
+    }
+
+    public boolean isEmailExist(String email) {
+        for (Customer c : this) {
+            if (c.getEmail().equalsIgnoreCase(email))
+                return true;
+        }
+        return false;
+    }
 }

@@ -40,10 +40,10 @@ public class MainController {
                 customerController.register();
                 break;
             case 2:
-                // customerController.update();
+                customerController.update();
                 break;
             case 3:
-                // customerController.search();
+                customerController.search();
                 break;
             case 4:
                 // menuController.display();
@@ -75,23 +75,25 @@ public class MainController {
             subChoice = view.getSubMenuChoice();
             final int finalSubChoice = subChoice;
 
-            ErrorHandler.handle(() -> {
-                switch (finalSubChoice) {
-                    case 1:
-                        System.out.println("--- Customer List ---");
-                        customerController.display();
-                        break;
-                    case 2:
-                        System.out.println("--- Order List ---");
-                        // orderController.display();
-                        break;
-                    case 3:
-                        System.out.println("Returning...");
-                        break;
-                    default:
-                        System.out.println("Invalid choice!");
-                }
-            });
+            ErrorHandler.handle(() -> processSubMenuOption(finalSubChoice));
         } while (subChoice != 3);
+    }
+
+    private void processSubMenuOption(int choice) throws Exception {
+        switch (choice) {
+            case 1:
+                System.out.println("--- Customer List ---");
+                customerController.display();
+                break;
+            case 2:
+                System.out.println("--- Order List ---");
+                // orderController.display();
+                break;
+            case 3:
+                System.out.println("Returning...");
+                break;
+            default:
+                throw new Exception("Invalid choice!"); // Ném lỗi để ErrorHandler bắt
+        }
     }
 }

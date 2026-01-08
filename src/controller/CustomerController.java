@@ -22,20 +22,19 @@ public class CustomerController {
 
     public void register() {
         view.displayMessage("----- REGISTER NEW CUSTOMER -----");
-
         try {
-            // 1. Điều phối View nhập ID.
-            // Truyền lambda expression để View biết cách check trùng mà không cần gọi Service trực tiếp
+            // 1. Nhập ID (Check trùng)
             String code = view.inputIdForRegister(id -> customerService.searchByCode(id) != null);
 
-            // 2. Điều phối View nhập thông tin còn lại
-            Customer newCus = view.inputCustomerDetails(code);
+            // 2. Nhập chi tiết (Truyền thêm logic check trùng Phone và Email vào View)
+            Customer newCus = view.inputCustomerDetails(
+                    code,
+                    phone -> customerService.isPhoneExist(phone),
+                    email -> customerService.isEmailExist(email));
 
-            // 3. Gọi Service xử lý lưu trữ
+            // 3. Lưu (Lúc này service.addNew không lo bị lỗi trùng nữa vì view đã chặn rồi)
             customerService.addNew(newCus);
             customerService.saveToFile(FILE_NAME);
-
-            // 4. Báo thành công
             view.displayMessage("Register and save successfully!");
 
         } catch (Exception e) {
@@ -65,11 +64,12 @@ public class CustomerController {
             view.displayMessage("Enter new info:");
 
             // 3. Điều phối View nhập thông tin mới
-            // (Tạm truyền code cũ vào, dù ta chỉ quan tâm name/phone/email)
-            Customer tempInfo = view.inputCustomerDetails(code);
+            Customer tempInfo = view.inputCustomerDetails(
+                    code,
+                    phone -> customerService.isPhoneExist(phone),
+                    email -> customerService.isEmailExist(email));
 
             // 4. Gọi Service/Model update logic
-            // (Lưu ý: Model Customer cần có hàm updateDetails như bài trước)
             oldCus.updateDetails(tempInfo.getName(), tempInfo.getPhoneNumber(), tempInfo.getEmail());
 
             // 5. Lưu file

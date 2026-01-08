@@ -21,19 +21,36 @@ public class CustomerView {
         });
     }
 
-    public Customer inputCustomerDetails(String code) {
+    public Customer inputCustomerDetails(String code, Predicate<String> isPhoneDuplicate,
+            Predicate<String> isEmailDuplicate) {
         String name = Inputter.getAString(
                 "Enter Name: ",
                 "Invalid Name! (Name must be between 2-25 characters)",
                 Acceptable.NAME_VALID);
-        String phone = Inputter.getAString(
-                "Enter Phone: ",
-                "Invalid Phone! (Must start with 0 and contain exactly 10 digits)",
-                Acceptable.PHONE_VALID);
-        String email = Inputter.getAString(
-                "Enter Email: ",
-                "Invalid Email! (Correct format example: user@domain.com)",
-                Acceptable.EMAIL_VALID);
+        String phone = Inputter.wrapRetry(() -> {
+            String p = Inputter.getAString(
+                    "Enter Phone: ",
+                    "Invalid Phone! (Must start with 0 and contain exactly 10 digits)",
+                    Acceptable.PHONE_VALID);
+
+            // Test trùng ngay khi vừa Enter
+            if (isPhoneDuplicate.test(p)) {
+                throw new Exception("Phone number '" + p + "' is already used!");
+            }
+            return p;
+        });
+        String email = Inputter.wrapRetry(() -> {
+            String e = Inputter.getAString(
+                    "Enter Email: ",
+                    "Invalid Email! (Correct format example: user@domain.com)",
+                    Acceptable.EMAIL_VALID);
+
+            // Test trùng ngay khi vừa Enter
+            if (isEmailDuplicate.test(e)) {
+                throw new Exception("Email '" + e + "' is already used!");
+            }
+            return e;
+        });
         return new Customer(code, name, phone, email);
     }
 

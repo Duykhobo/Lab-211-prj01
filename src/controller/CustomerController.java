@@ -26,13 +26,13 @@ public class CustomerController {
             // 1. Nhập ID (Check trùng)
             String code = view.inputIdForRegister(id -> customerService.searchByCode(id) != null);
 
-            // 2. Nhập chi tiết (Truyền thêm logic check trùng Phone và Email vào View)
+            // 2. Nhập chi tiết
             Customer newCus = view.inputCustomerDetails(
                     code,
                     phone -> customerService.isPhoneExist(phone),
                     email -> customerService.isEmailExist(email));
 
-            // 3. Lưu (Lúc này service.addNew không lo bị lỗi trùng nữa vì view đã chặn rồi)
+            // 3. Lưu
             customerService.addNew(newCus);
             customerService.saveToFile(FILE_NAME);
             view.displayMessage("Register and save successfully!");
@@ -58,7 +58,7 @@ public class CustomerController {
             // 1. Điều phối View nhập ID cần sửa (Check phải tồn tại)
             String code = view.inputIdForUpdate(id -> customerService.searchByCode(id) != null);
 
-            // 2. Lấy data cũ để hiện ra (nếu muốn)
+            // 2. Lấy data cũ để hiện ra
             Customer oldCus = customerService.searchByCode(code);
             view.displayCustomer(oldCus);
             view.displayMessage("Enter new info:");

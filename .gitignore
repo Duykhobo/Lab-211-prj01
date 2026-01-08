@@ -36,6 +36,7 @@ nb-configuration.xml
 # 2. VS Code (Nếu bạn dùng VS Code để sửa code)
 .vscode/
 *.code-workspace
+settings.json
 
 # 3. Build Folders (Thư mục biên dịch của NetBeans/Ant)
 build/

@@ -1,0 +1,50 @@
+# --- PHẦN 1: JAVA CHUẨN (Giữ nguyên từ bản mẫu của bạn) ---
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs
+hs_err_pid*
+replay_pid*
+
+# --- PHẦN 2: BỔ SUNG CHO PROJECT CỦA BẠN (QUAN TRỌNG) ---
+
+# 1. NetBeans (Rất quan trọng để tránh lỗi cấu hình máy cá nhân)
+nbproject/private/
+nbbuild/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+
+# 2. VS Code (Nếu bạn dùng VS Code để sửa code)
+.vscode/
+*.code-workspace
+
+# 3. Build Folders (Thư mục biên dịch của NetBeans/Ant)
+build/
+dist/
+
+# 4. Data Files (Tránh đẩy file dữ liệu chạy thử lên Git)
+# Chỉ ignore file .dat, giữ lại file .csv (FeastMenu.csv) vì nó là đề bài
+*.dat
+
+# 5. OS Junk Files (File rác hệ điều hành)
+.DS_Store
+Thumbs.db
